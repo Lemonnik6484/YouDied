@@ -23,6 +23,8 @@ public class DeathSplashScreen extends DeathScreenWrapper {
     private long fadeInMenuStart;
     private boolean showingMenu;
 
+    private static final ResourceLocation DEATH_TEXTURE = new ResourceLocation(YouDied.MOD_ID, "textures/gui/death_image.png");
+
     public DeathSplashScreen(DeathScreenWrapper deathScreen) {
         super(deathScreen);
         this.deathScreen = deathScreen;
@@ -80,26 +82,17 @@ public class DeathSplashScreen extends DeathScreenWrapper {
 
         if (!showingMenu) {
             float centerY = this.height / 2f;
-            guiGraphics.fillGradient( 0, (int) centerY - 45, this.width, (int) centerY - 25, 0x00000000, 0xea000000);
+            guiGraphics.fillGradient(0, (int) centerY - 45, this.width, (int) centerY - 25, 0x00000000, 0xea000000);
             guiGraphics.fill(0, (int) centerY - 25, this.width, (int) centerY + 25, 0xea000000);
-            guiGraphics.fillGradient( 0, (int) centerY + 25, this.width, (int) centerY + 45, 0xea000000, 0x00000000);
+            guiGraphics.fillGradient(0, (int) centerY + 25, this.width, (int) centerY + 45, 0xea000000, 0x00000000);
 
-            float w = font.getSplitter().stringWidth(deathTitle.getVisualOrderText()) - 1;
-            float x = (this.width / 2f) - (w / 2f);
-            float y = (this.height / 2f) + 2;
+            int textureWidth = 161;
+            int textureHeight = 21;
+            int x = (this.width - textureWidth) / 2;
+            int y = (int) centerY - (textureHeight / 2);
 
-            float scaleZoom = Mth.lerp(zoomIn, 0F, 0.4F);
-            float scale = 2.6F + scaleZoom;
-
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(x + (w / 2f), y, 0);
-            guiGraphics.pose().scale(scale, scale, scale);
-
-            int l = Mth.ceil(fadeInText * 255.0F) << 24;
-            if ((l & 0xfc000000) != 0) {
-                guiGraphics.drawString(font, deathTitle, (int) -(w/2f), -font.lineHeight, 0x008a0001 | l, false);
-            }
-            guiGraphics.pose().popPose();
+            RenderSystem.setShaderTexture(0, DEATH_TEXTURE);
+            guiGraphics.blit(DEATH_TEXTURE, x, y, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
         } else {
             int l = Mth.ceil(fadeIn * 255.0F) << 24;
             if ((l & 0xfc000000) != 0) {
